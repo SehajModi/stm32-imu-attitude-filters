@@ -1,0 +1,26 @@
+# STM32CubeIDE build output
+firmware/Debug/
+firmware/Release/
+*.o
+*.d
+*.elf
+*.map
+*.su
+*.cyclo
+*.list
+*.srec
+*.bin
+*.hex
+
+# IDE
+firmware/.settings/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+
+# A stray log from running the plotter at the repo root
+# (move logs you want to keep into data/)
+/imu_log.csv
+
