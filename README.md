@@ -23,7 +23,7 @@ This project builds that fusion twice, with a classic complementary filter and a
 - MPU6050 breakout (accelerometer + gyroscope)
 - I2C1 at 100 kHz, UART2 at 115200 8N1 over the ST-LINK virtual COM port
 
-Wiring: see `docs/wiring.png` (pins are defined in `firmware/*.ioc`).
+Pin assignments are defined in `firmware/mpu_test.ioc`. A wiring diagram will be added under `docs/`.
 
 ## How the complementary filter works
 
@@ -52,7 +52,7 @@ Other details:
 
 ## Results
 
-Numbers come from `tools/analyze.py` run on the logs in `data/`.
+Not measured yet. Every cell below is `TBD`. The numbers will be computed from the logs in `data/` with an analysis script that is still to be written, and the EKF column fills in once the EKF is done.
 
 | Metric | Accel only | Complementary | EKF |
 |---|---|---|---|
@@ -63,7 +63,7 @@ Numbers come from `tools/analyze.py` run on the logs in `data/`.
 | Filter cost per update (us) | n/a | TBD | TBD |
 | Flash / RAM (bytes) | n/a | TBD | TBD |
 
-Plots: `docs/` (still, tilt, shake).
+Plots of the still, tilt and shake tests will be added to `docs/`.
 
 ## Run it
 
@@ -93,7 +93,7 @@ roll_acc, roll_filtered, pitch_acc, pitch_filtered
 firmware/   STM32CubeIDE project (.ioc, Core/, Drivers/)
 tools/      live plotter and analysis scripts
 data/       recorded logs (still, tilt, shake)
-docs/       plots, wiring diagram, demo
+docs/       plots, wiring diagram, demo (added as they are produced)
 ```
 
 ## Known limits
@@ -101,11 +101,14 @@ docs/       plots, wiring diagram, demo
 - No yaw. Gyro-only yaw drifts, and the MPU6050 has no magnetometer.
 - Sustained acceleration (a steady turn or ramp) still corrupts the estimate, because gravity and acceleration cannot be separated with these two sensors alone.
 - MPU6050 accelerometer offsets are not calibrated, so a resting angle can be off by a degree or two.
+- The 0.03 g gating tolerance was tuned by hand on shake tests. It has not yet been checked against the sensor's resting `|a|`; if that reads outside 0.97 to 1.03 g, the filter stays in its gyro-heavy mode even when still.
 
 ## Roadmap
 
 - [x] Complementary filter with adaptive gain
 - [x] Live plotting and CSV logging
+- [ ] Analysis script for the logs in `data/`
+- [ ] Wiring diagram and demo clip in `docs/`
 - [ ] EKF with gyro-bias state and `|a|`-scaled measurement noise
 - [ ] Static error test against known angles
 - [ ] Cost and memory comparison
