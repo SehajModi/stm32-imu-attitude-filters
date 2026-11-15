@@ -23,4 +23,4 @@ __pycache__/
 # A stray log from running the plotter at the repo root
 # (move logs you want to keep into data/)
 /imu_log.csv
-
+/imu_log_*.csv

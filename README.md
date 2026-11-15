@@ -6,7 +6,7 @@ Both filters run in the same loop on the same sensor samples, so they can be com
 | Filter | Status |
 |---|---|
 | Complementary filter with `\|a\|`-adaptive gain | Done (`v0.1-complementary`) |
-| Extended Kalman filter (roll, pitch, gyro bias) | In progress |
+| Extended Kalman filter (roll, pitch, gyro bias) | Running on hardware, evaluation pending |
 | Side-by-side results | After EKF |
 
 <!-- Add a GIF or demo clip here: docs/demo.gif -->
@@ -81,11 +81,19 @@ The plot also writes `imu_log.csv` with timestamps for later analysis.
 
 ## Serial output format
 
-One CSV line per print, angles in centi-degrees:
+One CSV line per print, 7 values. Angles are in centi-degrees (divide by 100 for degrees), and the last value is total acceleration in milli-g:
 
 ```
-roll_acc, roll_filtered, pitch_acc, pitch_filtered
+roll_acc, roll_cf, pitch_acc, pitch_cf, roll_ekf, pitch_ekf, accel_magnitude_mg
 ```
+
+Logs recorded with earlier firmware (before the EKF was added) have four columns: `roll_acc, roll_cf, pitch_acc, pitch_cf`.
+
+## Fault recovery
+
+The sensor wires were pulled while the firmware was running. On a failed read the firmware reports it over UART, keeps retrying to recover the I2C bus, and resumes streaming once the MPU6050 responds again. The UART shows `read fail`, then `I2C stuck, recovering...`, then repeated `MPU not responding` retry messages, then `Recovered`.
+
+Screen captures of two such tests will be added here.
 
 ## Repo layout
 
@@ -109,7 +117,8 @@ docs/       plots, wiring diagram, demo (added as they are produced)
 - [x] Live plotting and CSV logging
 - [ ] Analysis script for the logs in `data/`
 - [ ] Wiring diagram and demo clip in `docs/`
-- [ ] EKF with gyro-bias state and `|a|`-scaled measurement noise
+- [x] EKF with gyro-bias state, running alongside the complementary filter
+- [x] I2C failure detection and recovery
 - [ ] Static error test against known angles
 - [ ] Cost and memory comparison
 - [ ] Fault-detection classifier on top of the estimate
